@@ -2,7 +2,7 @@ import json
 import google.generativeai as genai
 
 # 본인의 API 키를 여기에 입력하세요
-genai.configure(api_key="발급받은_키를_여기에_붙여넣으세요")
+genai.configure(api_key="AQ.Ab8RN6JF04JOMsREgPIxZ__EO2G5TBqLTrY6y7Ex2VbhCOu1jA")
 
 def get_summary(company):
     model = genai.GenerativeModel('gemini-1.5-flash')
