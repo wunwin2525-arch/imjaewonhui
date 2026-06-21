@@ -1,9 +1,8 @@
 import json
-import os
 import urllib.request
 
 def get_summary(company):
-    # API 키를 직접 변수에 넣으세요 (여기가 제일 중요합니다)
+    # 제공해주신 키를 적용했습니다.
     api_key = "AQ.Ab8RN6KbqWY6pkFRHHntWCNYJHO6jMVR9-6nBTzWQG0TV65LYg"
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
     
