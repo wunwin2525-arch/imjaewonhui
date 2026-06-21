@@ -1,23 +1,25 @@
-import os
 import json
-import google.generativeai as genai
-
-# 1. API 키 설정 (직접 입력 방식)
-genai.configure(api_key="AQ.Ab8RN6KbqWY6pkFRHHntWCNYJHO6jMVR9-6nBTzWQG0TV65LYg")
+import os
+import urllib.request
 
 def get_summary(company):
-    # 최신 라이브러리 방식의 모델 호출
-    model = genai.GenerativeModel('gemini-1.5-flash')
-    response = model.generate_content(f"{company}의 현재 주가 전망과 주요 이슈를 투자자 입장에서 핵심만 3줄로 요약해줘.")
-    return response.text
-
-try:
+    # API 키를 직접 변수에 넣으세요 (여기가 제일 중요합니다)
+    api_key = "AQ.Ab8RN6KbqWY6pkFRHHntWCNYJHO6jMVR9-6nBTzWQG0TV65LYg"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+    
     data = {
-        "samsung": get_summary("삼성전자"),
-        "hynix": get_summary("SK하이닉스")
+        "contents": [{"parts": [{"text": f"{company}의 현재 주가 전망과 주요 이슈를 투자자 입장에서 핵심만 3줄로 요약해줘."}]}]
     }
-    with open('data.json', 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=4)
-except Exception as e:
-    print(f"오류 발생: {e}")
-    exit(1)
+    
+    req = urllib.request.Request(url, data=json.dumps(data).encode(), headers={'Content-Type': 'application/json'})
+    with urllib.request.urlopen(req) as response:
+        result = json.loads(response.read().decode())
+        return result['candidates'][0]['content']['parts'][0]['text']
+
+data = {
+    "samsung": get_summary("삼성전자"),
+    "hynix": get_summary("SK하이닉스")
+}
+
+with open('data.json', 'w', encoding='utf-8') as f:
+    json.dump(data, f, ensure_ascii=False, indent=4)
