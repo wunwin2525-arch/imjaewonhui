@@ -5,8 +5,8 @@ import google.generativeai as genai
 genai.configure(api_key="AQ.Ab8RN6JF04JOMsREgPIxZ__EO2G5TBqLTrY6y7Ex2VbhCOu1jA")
 
 def get_summary(company):
-    model = genai.GenerativeModel('gemini-1.5-flash')
-    # AI에게 분석 요청
+    # 모델 이름을 'gemini-1.5-flash-latest'로 변경
+    model = genai.GenerativeModel('gemini-1.5-flash-latest')
     response = model.generate_content(f"{company}의 현재 주가 전망과 주요 이슈를 투자자 입장에서 핵심만 3줄로 요약해줘.")
     return response.text
 
