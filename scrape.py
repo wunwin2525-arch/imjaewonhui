@@ -1,12 +1,13 @@
+import os
 import json
 import google.generativeai as genai
 
-# 본인의 API 키를 여기에 입력하세요
+# API 키를 명시적으로 설정 (여기에 본인의 API 키를 직접 넣으세요)
 genai.configure(api_key="AQ.Ab8RN6JF04JOMsREgPIxZ__EO2G5TBqLTrY6y7Ex2VbhCOu1jA")
 
 def get_summary(company):
-    # 모델 이름을 'gemini-1.5-flash-latest'로 변경
-    model = genai.GenerativeModel('gemini-1.5-flash-latest')
+    # 모델 호출 방식 수정
+    model = genai.GenerativeModel('gemini-1.5-flash')
     response = model.generate_content(f"{company}의 현재 주가 전망과 주요 이슈를 투자자 입장에서 핵심만 3줄로 요약해줘.")
     return response.text
 
