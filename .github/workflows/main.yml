@@ -1,8 +1,6 @@
 name: Auto Update
 
 on:
-  schedule:
-    - cron: '0 * * * *'
   workflow_dispatch:
 
 jobs:
@@ -10,13 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with: { python-version: '3.9' }
-      - run: pip install -U google-generativeai
       - name: Run script
-        env:
-          API_KEY: ${{ secrets.API_KEY }}
         run: python scrape.py
       - name: Commit and Push
         run: |
@@ -25,4 +17,3 @@ jobs:
           git add data.json
           git commit -m "Auto-update news"
           git push
-
