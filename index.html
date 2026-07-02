@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>식자재 도감 및 계산기</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background-color: #f4f4f9; }
+        .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        .tab-btn { padding: 10px 15px; cursor: pointer; border: none; border-radius: 5px; background: #ddd; font-weight: bold; }
+        .tab-btn.active { background: #2c3e50; color: white; }
+        .content { display: none; }
+        .content.active { display: block; }
+
+        .card-box { max-width: 450px; margin: 0 auto; padding: 20px; background: white; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; margin-bottom: 10px; }
+        button.action-btn { width: 100%; padding: 12px; background: #2c3e50; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; max-width: 800px; margin: 0 auto; }
+        .card { background: white; padding: 10px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; }
+        .card img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; }
+        .name { margin-top: 8px; font-weight: bold; font-size: 0.9em; }
+        
+        .guide-item { padding: 10px; border-bottom: 1px solid #eee; font-size: 0.95em; color: #333; }
+        #result { margin-top: 20px; padding: 15px; background: #fdfdfd; border: 1px solid #ddd; border-radius: 8px; line-height: 1.8; }
+        .reasoning { margin-top: 10px; font-size: 0.85em; color: #666; border-top: 1px dashed #ccc; padding-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('dogam')">도감</button>
+        <button class="tab-btn" onclick="showTab('calc')">계산기</button>
+        <button class="tab-btn" onclick="showTab('guide')">키 가이드</button>
+    </div>
+
+    <div id="dogam" class="content active">
+        <div class="grid-container">
+            <div class="card"><img src="https://i.imgur.com/qcY7kiF.jpeg" alt="알배기"><div class="name">알배기 배추</div></div>
+            <div class="card"><img src="https://i.imgur.com/HpP2mRZ.jpeg" alt="양배추"><div class="name">양배추</div></div>
+            <div class="card"><img src="https://i.imgur.com/lCuprYZ.jpeg" alt="통배추"><div class="name">통배추(특)</div></div>
+            <div class="card"><img src="https://i.imgur.com/sePK3R7.jpeg" alt="얼갈이"><div class="name">얼갈이</div></div>
+            <div class="card"><img src="https://i.imgur.com/0jeRa4P.jpeg" alt="열무"><div class="name">열무</div></div>
+            <div class="card"><img src="https://i.imgur.com/VSWeUG6.jpeg" alt="애호박"><div class="name">인큐애호박</div></div>
+        </div>
+    </div>
+
+    <div id="calc" class="content">
+        <div class="card-box">
+            <label>1묶음당 개수</label>
+            <input type="text" id="bQty" placeholder="예: 3" oninput="formatNumber(this)">
+            <label>1묶음당 가격</label>
+            <input type="text" id="bPrice" placeholder="예: 9,900" oninput="formatNumber(this)">
+            <label>내가 가져온 총 개수</label>
+            <input type="text" id="totalActual" placeholder="예: 10" oninput="formatNumber(this)">
+            <button class="action-btn" onclick="calculate()">결과 계산하기</button>
+            <div id="result" style="display:none;"></div>
+        </div>
+    </div>
+
+    <div id="guide" class="content">
+        <div class="card-box">
+            <h3>자주 보는 키 가이드</h3>
+            <div class="guide-item">[반품] 전체거래 > 거래내역 [확인 누르고] > [F2] 누르고 반품처리 > 전체거래 반품전 내역 [확인 누르고 F5] > 1번 </div>
+            <div class="guide-item">[배달] 전체거래 > 거래내역 [확인 누르고] > 배달 누르고 > 인쇄 *물은 최대 2팩 배달 가능,배달은 오후 4시30분까지,주소지 확인*</div>
+            <div class="guide-item">[외상] 거래화면에서 F2 눌러서 외상으로 변경후 [지불] 누르고 영수증 하나 드리고 하나는 돈 통에 넣기</div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabId) {
+            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        function formatNumber(input) {
+            let val = input.value.replace(/,/g, '');
+            if (!isNaN(val) && val !== "") {
+                input.value = Number(val).toLocaleString('ko-KR');
+            }
+        }
+
+        function calculate() {
+            const bQty = Number(document.getElementById('bQty').value.replace(/,/g, ''));
+            const bPrice = Number(document.getElementById('bPrice').value.replace(/,/g, ''));
+            const total = Number(document.getElementById('totalActual').value.replace(/,/g, ''));
+
+            if (bQty && bPrice && total) {
+                const unitPrice = bPrice / bQty;
+                const finalPrice = unitPrice * total;
+                
+                document.getElementById('result').style.display = "block";
+                document.getElementById('result').innerHTML = 
+                    `최종 예상 금액: <b style="color:red; font-size:1.2em;">${Math.round(finalPrice).toLocaleString()}원</b><br>` +
+                    `<div class="reasoning">` +
+                    `<b>[근거]</b><br>` +
+                    `개당 단가: ${bPrice.toLocaleString()}원 ÷ ${bQty}개 = <b>${Math.round(unitPrice).toLocaleString()}원</b><br>` +
+                    `총 금액: ${Math.round(unitPrice).toLocaleString()}원 × ${total}개 = <b>${Math.round(finalPrice).toLocaleString()}원</b>` +
+                    `</div>`;
+            } else {
+                alert("값을 모두 입력해주세요!");
+            }
+        }
+    </script>
+</body>
+</html>
